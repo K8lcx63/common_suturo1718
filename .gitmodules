@@ -1,0 +1,5 @@
+[submodule "iai_maps"]
+        path = iai_maps
+        url = https://github.com/code-iai/iai_maps
+        ignore = all
+
