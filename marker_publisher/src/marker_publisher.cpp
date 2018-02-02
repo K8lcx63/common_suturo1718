@@ -1,38 +1,36 @@
 #include <ros/ros.h>
-#include <visualization_msgs/Marker.h>
 #include <marker_publisher/marker_publisher.h>
 
-MarkerPublisher::MarkerPublisher(const std::string ns, const Color c):
-name_space(ns),
-color(c)
+MarkerPublisher::MarkerPublisher(const std::string ns, const Color c)
 {
     ros::NodeHandle nh;
     vis_pub = nh.advertise<visualization_msgs::Marker>( "visualization_marker", 0);
+    init(ns, c, 0.1, 0.1, 0.1, visualization_msgs::Marker::SPHERE);
 }
 
-void MarkerPublisher::publishVisualizationMarker(geometry_msgs::PointStamped point)
+MarkerPublisher::MarkerPublisher(const std::string ns, const Color c, const float scale_x, const float scale_y)
 {
-    visualization_msgs::Marker marker;
+    ros::NodeHandle nh;
+    vis_pub = nh.advertise<visualization_msgs::Marker>( "visualization_marker", 0);
+    init(ns, c, scale_x, scale_y, 0.05, visualization_msgs::Marker::CUBE);
+}
 
-    marker.header.frame_id = point.header.frame_id;
-    marker.header.stamp = ros::Time();
+void MarkerPublisher::init(const std::string ns, const Color c, float scale_x, const float scale_y, const float scale_z, const int type)
+{
     marker.id = 0;
-    marker.ns = name_space;
-    marker.type = visualization_msgs::Marker::SPHERE;
+    marker.ns = ns;
+    marker.type = type;
     marker.action = visualization_msgs::Marker::ADD;
-    marker.pose.position.x = point.point.x;
-    marker.pose.position.y = point.point.y;
-    marker.pose.position.z = point.point.z;
     marker.pose.orientation.x = 0.0;
     marker.pose.orientation.y = 0.0;
     marker.pose.orientation.z = 0.0;
     marker.pose.orientation.w = 1.0;
-    marker.scale.x = 0.1;
-    marker.scale.y = 0.1;
-    marker.scale.z = 0.1;
+    marker.scale.x = scale_x;
+    marker.scale.y = scale_y;
+    marker.scale.z = scale_z;
     marker.color.a = 1.0;
        
-    switch(color)
+    switch(c)
     {
         case Color::BLACK: marker.color.r = 0.0;
                            marker.color.g = 0.0;
@@ -71,5 +69,15 @@ void MarkerPublisher::publishVisualizationMarker(geometry_msgs::PointStamped poi
                             marker.color.b = 0.54;
         break;
     }
+}
+
+void MarkerPublisher::publishVisualizationMarker(geometry_msgs::PointStamped point)
+{
+    marker.header.frame_id = point.header.frame_id;
+    marker.header.stamp = ros::Time();
+    marker.pose.position.x = point.point.x;
+    marker.pose.position.y = point.point.y;
+    marker.pose.position.z = point.point.z;
+
     vis_pub.publish(marker);
 }
