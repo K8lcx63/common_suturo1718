@@ -3,6 +3,7 @@
 #include <string>
 #include <visualization_msgs/Marker.h>
 #include <geometry_msgs/PointStamped.h>
+#include <ros/ros.h>
 
 enum class Color {BLACK, WHITE, BROWN, RED, GREEN, BLUE, YELLOW, ORANGE, PURPLE};
 

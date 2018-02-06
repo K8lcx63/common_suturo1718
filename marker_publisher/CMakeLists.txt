@@ -23,4 +23,4 @@ include_directories(
   include ${catkin_INCLUDE_DIRS}
 )
 
-add_library(marker_publisher src/marker_publisher)
+add_library(marker_publisher src/marker_publisher.cpp include/marker_publisher/marker_publisher.h)
