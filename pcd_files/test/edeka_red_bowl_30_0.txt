@@ -1,1 +1,0 @@
-/home/tammo/catkin_ws/src/common_suturo1718/pcd_files/test/edeka_red_bowl_30_0.pcd
