@@ -16,10 +16,15 @@ private:
 	Color color;
 
     void init(const std::string ns, const Color c, float scale_x, const float scale_y, const float scale_z, const int type);
+
+    void init(const std::string ns, const std::string meshPath);
+
 public:
 	MarkerPublisher(const std::string ns, const Color c);
 
     MarkerPublisher(const std::string ns, const Color c, const float scale_x, const float scale_y);
+
+    MarkerPublisher(const std::string ns, const std::string meshPath);
 
 	void publishVisualizationMarker(const geometry_msgs::PointStamped& point);
 
