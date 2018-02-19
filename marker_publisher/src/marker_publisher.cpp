@@ -66,6 +66,13 @@ MarkerPublisher::MarkerPublisher(const std::string ns, const Color c, const floa
     init(ns, c, scale_x, scale_y, 0.05, visualization_msgs::Marker::CUBE);
 }
 
+MarkerPublisher::MarkerPublisher(const std::string ns, std::string meshPath)
+{
+    ros::NodeHandle nh;
+    vis_pub = nh.advertise<visualization_msgs::Marker>( "visualization_marker", 0);
+    init(ns, meshPath);
+}
+
 void MarkerPublisher::init(const std::string ns, const Color c, float scale_x, const float scale_y, const float scale_z, const int type)
 {
     marker.id = 0;
@@ -81,6 +88,20 @@ void MarkerPublisher::init(const std::string ns, const Color c, float scale_x, c
     marker.scale.z = scale_z;
     marker.color.a = 1.0;
     Private::determineMarkerColor(marker, c);
+}
+
+void MarkerPublisher::init(const std::string ns, const std::string meshPath)
+{
+    marker.id = 0;
+    marker.ns = ns;
+    marker.action = visualization_msgs::Marker::ADD;
+    marker.type = visualization_msgs::Marker::MESH_RESOURCE;
+    marker.mesh_resource = meshPath;
+    marker.scale.x = 1.0;
+    marker.scale.y = 1.0;
+    marker.scale.z = 1.0;
+    marker.color.a = 1.0;
+    marker.pose.orientation.w = 1.0;
 }
 
 void MarkerPublisher::publishVisualizationMarker(const geometry_msgs::PointStamped& point) {
