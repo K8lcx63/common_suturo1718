@@ -23,7 +23,7 @@ Marker InteractivMarkerPublisher::makeBox( InteractiveMarker &msg )
   Marker marker;
 
   marker.type = visualization_msgs::Marker::MESH_RESOURCE;
-  marker.mesh_resource = "package://grasp/meshes/ja_milch/ja_milch.dae";
+  marker.mesh_resource = "package://knowledge_common/meshes/ja_milch/ja_milch.dae";
   marker.color.r = 0.5;
   marker.color.g = 0.5;
   marker.color.b = 0.5;
@@ -52,7 +52,7 @@ void InteractivMarkerPublisher::updateTf(int, const ros::TimerEvent& event)
   tf::StampedTransform transformGripper;
   try
   {
-    listener.lookupTransform("/l_gripper_tool_frame", "/base_link", ros::Time(0), transformGripper);
+    listener.lookupTransform("/l_gripper_tool_frame", "/ja_milch", ros::Time(0), transformGripper);
   }
   catch (tf::TransformException ex)
   {
@@ -74,16 +74,8 @@ void InteractivMarkerPublisher::updateTf(int, const ros::TimerEvent& event)
   tf::Quaternion gripperQuaternion = transformGripper.getRotation();
   tf::Quaternion objectQuaternion = transformObject.getRotation();
   
-  tf::Matrix3x3 m(gripperQuaternion);
-  double roll, pitch, yaw;
-  m.getRPY(roll, pitch, yaw);
-
-  tf::Matrix3x3 m2(objectQuaternion);
-  double roll2, pitch2, yaw2;
-  m2.getRPY(roll2, pitch2, yaw2);
-
-  double yawDiff = std::abs(yaw-yaw2);
-  ROS_INFO_STREAM("yawDiff: " << yawDiff);
+  geometry_msgs::Quaternion gripperRotInObjectFrame;
+  quaternionTFToMsg(gripperQuaternion, gripperRotInObjectFrame);
 
   geometry_msgs::PointStamped graspPoint;
   geometry_msgs::PointStamped gripperOrigin;
@@ -96,6 +88,7 @@ void InteractivMarkerPublisher::updateTf(int, const ros::TimerEvent& event)
   try
   {
     //listener.waitForTransform("/ja_milch", "l_gripper_tool_frame", ros::Time(0), ros::Duration(10.0));
+    //listener.transformQuaternion("/ja_milch", gripperQuaternion, gripperRotInObjectFrame);
     listener.transformPoint("/ja_milch", gripperOrigin, graspPoint);
   }
   catch (tf::TransformException ex)
@@ -103,8 +96,8 @@ void InteractivMarkerPublisher::updateTf(int, const ros::TimerEvent& event)
     ROS_ERROR("%s",ex.what());
     ros::Duration(1.0).sleep();
   }
-
-  ROS_INFO_STREAM("x: " << graspPoint.point.x << " y: " << graspPoint.point.y << " z: " << graspPoint.point.z);
+  ROS_INFO_STREAM("ROTATION :" << gripperRotInObjectFrame);
+  ROS_INFO_STREAM("POINT : x: " << graspPoint.point.x << " y: " << graspPoint.point.y << " z: " << graspPoint.point.z);
 }
 
 void InteractivMarkerPublisher::make6DofMarker()

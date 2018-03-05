@@ -6,6 +6,7 @@
 #include <geometry_msgs/Pose.h>
 #include <tf/transform_broadcaster.h>
 #include <tf/transform_listener.h>
+#include <tf/transform_datatypes.h>
 
 using namespace visualization_msgs;
 
